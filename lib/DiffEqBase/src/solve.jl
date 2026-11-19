@@ -608,8 +608,16 @@ For information on setting up progress bars in VS Code and other environments, s
 [progress bar documentation](https://docs.sciml.ai/DiffEqDocs/stable/features/progress_bar/#Using-Progress-Bars-with-VS-Code).
 
 * `progress`: Turns on/off the Juno progressbar. Default is false.
-* `progress_steps`: Numbers of steps between updates of the progress bar.
-  Default is 1000.
+* `progress_steps`: Only consider a progress update every `progress_steps` steps.
+  Default is 1 for OrdinaryDiffEq, StochasticDiffEq and DelayDiffEq solvers; other
+  solver packages may use a different default.
+* `progress_tspan` (OrdinaryDiffEq, StochasticDiffEq and DelayDiffEq solvers): Minimum
+  fraction of `tspan` covered between two progress updates. Default is 0.01.
+* `progress_min_interval` (OrdinaryDiffEq, StochasticDiffEq and DelayDiffEq solvers):
+  Minimum wall time in seconds between two progress updates, so fast solves only
+  report the start and the end. Default is 0.02; 0 sends every update the other
+  options allow, `Inf` only the start and the end. With an infinite `tspan`, only the
+  start and the end are reported.
 * `progress_name`: Controls the name of the progressbar. Default is the name
   of the problem type.
 * `progress_message`: Controls the message with the progressbar. Defaults to

@@ -1,5 +1,8 @@
 ## SciMLBase Trait Definitions
 
+DiffEqBase.solver_specific_kwargs(::AbstractMethodOfStepsAlgorithm) =
+    OrdinaryDiffEqCore.PROGRESS_KWARGS
+
 function SciMLBase.isautodifferentiable(alg::AbstractMethodOfStepsAlgorithm)
     return SciMLBase.isautodifferentiable(alg.alg)
 end

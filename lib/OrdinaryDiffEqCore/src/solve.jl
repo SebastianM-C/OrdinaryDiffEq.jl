@@ -235,8 +235,21 @@ function _build_callback_cache(u, max_len, ::Val{false}, ::Type{uBottomEltype}) 
     return DiffEqBase.CallbackCache(max_len, T, T)
 end
 
+"""
+    PROGRESS_KWARGS
+
+Names of the progress solve keywords that SciMLBase doesn't list in `allowedkeywords`
+yet. OrdinaryDiffEqCore returns them from `DiffEqBase.solver_specific_kwargs` for its
+algorithm types; packages with their own algorithm types that forward these keywords to
+OrdinaryDiffEqCore (e.g. DelayDiffEq) do the same.
+"""
+const PROGRESS_KWARGS = (:progress_tspan, :progress_min_interval)
+
 DiffEqBase.solver_specific_kwargs(::Union{OrdinaryDiffEqAlgorithm, DAEAlgorithm}) =
-    (:resume_dt_after_tstop,)
+    (:resume_dt_after_tstop, PROGRESS_KWARGS...)
+DiffEqBase.solver_specific_kwargs(
+    ::Union{StochasticDiffEqAlgorithm, StochasticDiffEqRODEAlgorithm}
+) = PROGRESS_KWARGS
 
 Base.@constprop :aggressive function SciMLBase.__init(
         prob::Union{
@@ -455,7 +468,9 @@ Base.@constprop :aggressive function _ode_init(
         resume_dt_after_tstop = false,
         initialize_save = true,
         progress = false,
-        progress_steps = 1000,
+        progress_steps = 1,
+        progress_tspan = DEFAULT_PROGRESS_TSPAN,
+        progress_min_interval = nothing,
         progress_name = "ODE",
         progress_message = ODE_DEFAULT_PROG_MESSAGE,
         progress_id = :OrdinaryDiffEq,
@@ -892,6 +907,8 @@ Base.@constprop :aggressive function _ode_init(
         progress_name,
         progress_message,
         progress_id,
+        check_progress_tspan(progress_tspan), 0.0, UInt64(0),
+        check_progress_min_interval(progress_min_interval),
         timeseries_errors,
         dense_errors, delta, stage_limiter!, step_limiter!, dense,
         save_on, save_start,
