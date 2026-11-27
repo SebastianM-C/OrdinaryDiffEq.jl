@@ -1175,6 +1175,8 @@ Base.@constprop :aggressive function _ode_init(
         handle_starting_time_discontinuity!(integrator)
     end
 
+    reset_progress!(integrator)  # starts the progress throttle clock
+
     return integrator
 end
 
