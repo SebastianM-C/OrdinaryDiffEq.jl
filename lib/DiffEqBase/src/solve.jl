@@ -612,7 +612,9 @@ For information on setting up progress bars in VS Code and other environments, s
   Default is 1 for OrdinaryDiffEq, StochasticDiffEq and DelayDiffEq solvers; other
   solver packages may use a different default.
 * `progress_tspan` (OrdinaryDiffEq, StochasticDiffEq and DelayDiffEq solvers): Minimum
-  fraction of `tspan` covered between two progress updates. Default is 0.01.
+  fraction of `tspan` covered between two progress updates. Default is 0.01. Progress
+  is measured against the problem's `tspan`, also after `reinit!`; no intermediate
+  updates are sent while `t` is outside it.
 * `progress_min_interval` (OrdinaryDiffEq, StochasticDiffEq and DelayDiffEq solvers):
   Minimum wall time in seconds between two progress updates, so fast solves only
   report the start and the end. Default is 0.02; 0 sends every update the other
